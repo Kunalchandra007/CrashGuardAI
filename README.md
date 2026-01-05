@@ -366,26 +366,6 @@ Response:
 
 ---
 
-## 📸 Screenshots
-
-### Homepage
-![Homepage](./uis/homepage.png)
-*Modern dark-themed landing page with video upload*
-
-### Dashboard
-![Dashboard](./uis/dashboard.png)
-*Analytics dashboard with monthly statistics*
-
-### Accident Detection
-![Detection](./uis/single-accident.png)
-*Real-time detection with bounding boxes*
-
-### Alert System
-![Alert](./uis/email.png)
-*Automatic email notifications to authorities*
-
----
-
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -414,9 +394,9 @@ MAIL_PASSWORD=your_app_password
 Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b feature/new`)
+3. Commit your changes (`git commit -m 'new'`)
+4. Push to the branch (`git push origin new`)
 5. Open a Pull Request
 
 ### Development Guidelines
@@ -432,42 +412,6 @@ Contributions are welcome! Please follow these steps:
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👥 Team
-
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/sam55-c">
-        <img src="https://github.com/sam55-c.png" width="100px;" alt="Samundra Poudel"/><br />
-        <sub><b>Samundra Poudel</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/7xetri">
-        <img src="https://github.com/7xetri.png" width="100px;" alt="Saugat Thapa"/><br />
-        <sub><b>Saugat Thapa</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/SDPhoton">
-        <img src="https://github.com/SDPhoton.png" width="100px;" alt="Sagar Dhakal"/><br />
-        <sub><b>Sagar Dhakal</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/ebraj">
-        <img src="https://github.com/ebraj.png" width="100px;" alt="Ebraj Grg"/><br />
-        <sub><b>Ebraj Grg</b></sub>
-      </a>
-    </td>
-  </tr>
-</table>
-
----
-
 ## 🙏 Acknowledgments
 
 - [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics) - Object detection model
@@ -480,7 +424,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email support@crashguard-ai.com or open an issue in the repository.
+For support, email kunalchandra2506@gmail.com or open an issue in the repository.
 
 ---
 
