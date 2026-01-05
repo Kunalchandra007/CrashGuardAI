@@ -10,6 +10,7 @@ const InputForm = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [accidentDetected, setAccidentDetected] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,16 +57,19 @@ const InputForm = () => {
         // Set the video URL directly
         const videoUrl = `http://127.0.0.1:8080/api/v1/public/show-video/static/videos/${results.path}`;
         setVideo(videoUrl);
+        setIsAnalyzing(true);
         
         // Simulate accident detection (for demo purposes)
         // In production, this would come from the backend analysis
-        setAccidentDetected(true);
-        setShowAlert(true);
-        
-        // Auto-hide alert after 10 seconds
         setTimeout(() => {
-          setShowAlert(false);
-        }, 10000);
+          setAccidentDetected(true);
+          setShowAlert(true);
+          
+          // Auto-hide alert after 10 seconds
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 10000);
+        }, 3000); // Simulate 3 seconds of analysis before detection
       } else {
         alert(`Upload failed: ${results.message || "Unknown error"}`);
       }
@@ -74,6 +78,18 @@ const InputForm = () => {
       alert("Failed to upload video. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const stopAnalysis = () => {
+    setIsAnalyzing(false);
+    setVideo(null);
+    setFileName("");
+    setSelectedFile(null);
+    setAccidentDetected(false);
+    setShowAlert(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -178,13 +194,24 @@ const InputForm = () => {
             )}
             
             <div className="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border-4 border-green-500">
-              <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-4">
+              <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-4 flex items-center justify-between">
                 <h3 className="text-white font-bold text-xl flex items-center">
                   <svg className="w-6 h-6 mr-2 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   AI Detection in Progress - Live Stream
                 </h3>
+                {isAnalyzing && (
+                  <button
+                    onClick={stopAnalysis}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold transition-colors flex items-center space-x-2"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
+                    </svg>
+                    <span>Stop Analyzer</span>
+                  </button>
+                )}
               </div>
               <div className="p-4 bg-black min-h-[400px] flex items-center justify-center">
                 {video ? (
@@ -215,16 +242,7 @@ const InputForm = () => {
               </div>
             </div>
             <button
-              onClick={() => {
-                setVideo(null);
-                setFileName("");
-                setSelectedFile(null);
-                setAccidentDetected(false);
-                setShowAlert(false);
-                if (fileInputRef.current) {
-                  fileInputRef.current.value = "";
-                }
-              }}
+              onClick={stopAnalysis}
               className="w-full py-4 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
             >
               Upload Another Video
