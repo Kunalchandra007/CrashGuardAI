@@ -3,6 +3,28 @@ import dynamic from "next/dynamic";
 import { useEffect, useState, useRef } from "react";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 
+// MJPEG Stream Viewer Component  
+const MJPEGStreamViewer = ({ streamUrl }: { streamUrl: string }) => {
+  const [key, setKey] = useState(0);
+  
+  return (
+    <div className="w-full flex items-center justify-center bg-black rounded overflow-hidden">
+      {/* Reload img to refresh MJPEG stream */}
+      <img
+        key={key}
+        src={streamUrl}
+        alt="Live detection stream"
+        className="w-full h-96 object-contain"
+        onError={() => {
+          console.log("Stream error, retrying...");
+          setTimeout(() => setKey(prev => prev + 1), 2000);
+        }}
+        onLoad={() => console.log("Stream loaded")}
+      />
+    </div>
+  );
+};
+
 const InputForm = () => {
   const [video, setVideo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -215,15 +237,9 @@ const InputForm = () => {
               </div>
               <div className="p-4 bg-black min-h-[400px] flex items-center justify-center">
                 {video ? (
-                  <img
-                    src={video}
-                    alt="Live accident detection stream"
-                    className="w-full h-auto object-contain rounded"
-                    onLoad={() => console.log("Video stream loaded successfully")}
-                    onError={(e) => {
-                      console.error("Stream load error:", e);
-                    }}
-                  />
+                  <div className="w-full h-full flex items-center justify-center">
+                    <MJPEGStreamViewer streamUrl={video} />
+                  </div>
                 ) : (
                   <div className="text-center text-gray-400">
                     <svg className="animate-spin h-12 w-12 mx-auto mb-4" fill="none" viewBox="0 0 24 24">

@@ -1,8 +1,11 @@
 import json
 from flask import Blueprint, Response, jsonify,request, current_app
+from flask_cors import cross_origin
 from modules.detect_object_on_video import detect_object_on_video
 from PIL import Image
 import os
+import sys
+from pathlib import Path
 from ultralytics import YOLO
 from werkzeug.utils import secure_filename
 import cv2
@@ -29,15 +32,26 @@ def detect_object_on_image(image_file):
         ])
     return output
 
-# GENERATE FRAMES
-def generate_frames(path_x = ''):
-    yolo_output = detect_object_on_video(path_x)
-    for detection_ in yolo_output:
-        ref,buffer=cv2.imencode('.jpg',detection_)
+# Store current frame globally for streaming
+_current_frame = None
+_frame_lock = None
 
-        frame=buffer.tobytes()
+# GENERATE FRAMES
+def generate_frames(path_x = '', quality=80):
+    """
+    Generate MJPEG frames with optimized compression
+    quality: JPEG compression level 1-100 (lower = faster but worse quality)
+    """
+    global _current_frame
+    yolo_output = detect_object_on_video(path_x, frame_skip=2, scale_factor=0.75)
+    for detection_ in yolo_output:
+        # Encode with lower quality for faster streaming
+        ref, buffer = cv2.imencode('.jpg', detection_, [cv2.IMWRITE_JPEG_QUALITY, quality])
+        _current_frame = buffer.tobytes()
+        frame = _current_frame
         yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame +b'\r\n')
+                    b'Content-Type: image/jpeg\r\n'
+                    b'Content-length: ' + str(len(frame)).encode() + b'\r\n\r\n' + frame + b'\r\n')
         
 # ROUTES FOR HOME...
 @public_bp.route('/',methods=['GET'])
@@ -94,10 +108,15 @@ def api_video():
         name, ext = os.path.splitext(original_filename)
         filename = f"{name}_{timestamp}{ext}"
         
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        # Get server directory and construct absolute path
+        server_dir = Path(__file__).parent.parent.parent
+        upload_dir = server_dir / 'static' / 'videos'
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        
+        filepath = upload_dir / filename
         
         # Save the file with unique name
-        video_file.save(filepath)
+        video_file.save(str(filepath))
         print(f"✅ File saved successfully: {filepath}")
         
         return jsonify({
@@ -116,12 +135,23 @@ def api_video():
     
 # ROUTES FOR SHOW VIDEO...
 @public_bp.route('/show-video/static/videos/<path>', methods=['GET'])
+@cross_origin(origins=["http://localhost:3000"], supports_credentials=True)
 def show_video(path):
     print('🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
-    final_path = 'static/videos/' + path
-    return Response(generate_frames(path_x=final_path), mimetype='multipart/x-mixed-replace; boundary=frame')  
+    
+    # Get server directory and construct absolute path
+    server_dir = Path(__file__).parent.parent.parent
+    final_path = server_dir / 'static' / 'videos' / path
+    
+    if not final_path.exists():
+        return jsonify({"status": "error", "message": "Video file not found"}), 404
+    
+    return Response(generate_frames(path_x=str(final_path)), mimetype='multipart/x-mixed-replace; boundary=frame')
     
 # ROUTES FOR WEBCAM...
 @public_bp.route('/webcam', methods=['GET'])
 def api_webcam():
     return Response(generate_frames(path_x=0), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# Store for frame generation state
+_frame_generators = {}
