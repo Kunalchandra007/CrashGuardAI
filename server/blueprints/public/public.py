@@ -1,18 +1,34 @@
 import json
+import os
+from pathlib import Path
 from flask import Blueprint, Response, jsonify,request, current_app
 from flask_cors import cross_origin
-from modules.detect_object_on_video import detect_object_on_video
 from PIL import Image
-import os
-import sys
-from pathlib import Path
-from ultralytics import YOLO
 from werkzeug.utils import secure_filename
 import cv2
 from datetime import datetime
 
+matplotlib_dir = Path(__file__).parent.parent.parent / ".matplotlib"
+matplotlib_dir.mkdir(parents=True, exist_ok=True)
+os.environ["MPLCONFIGDIR"] = str(matplotlib_dir)
+yolo_config_dir = Path(__file__).parent.parent.parent / ".yolo-config"
+yolo_config_dir.mkdir(parents=True, exist_ok=True)
+os.environ["YOLO_CONFIG_DIR"] = str(yolo_config_dir)
+
+from ultralytics import YOLO
+from modules.detect_object_on_video import detect_object_on_video
+
 # PUBLIC BLUEPRINT...
 public_bp = Blueprint('public',__name__, url_prefix='/api/v1/public')
+
+allowed_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1:3002",
+]
 
 # DETECT OBJECT ON IMAGE
 def detect_object_on_image(image_file):
@@ -135,7 +151,7 @@ def api_video():
     
 # ROUTES FOR SHOW VIDEO...
 @public_bp.route('/show-video/static/videos/<path>', methods=['GET'])
-@cross_origin(origins=["http://localhost:3000"], supports_credentials=True)
+@cross_origin(origins=allowed_origins, supports_credentials=True)
 def show_video(path):
     print('🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
     

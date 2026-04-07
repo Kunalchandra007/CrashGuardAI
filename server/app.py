@@ -47,7 +47,17 @@ app.register_blueprint(emails)
 
 accidents_collection = mongo_db.accidents
 users_collection = mongo_db.users
-CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+
+allowed_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1:3002",
+]
+
+CORS(app, origins=allowed_origins, supports_credentials=True)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

@@ -1,0 +1,16 @@
+settings_version: 0.0.4
+datasets_dir: E:\test\datasets
+weights_dir: E:\test\CrashGuardAI\weights
+runs_dir: E:\test\CrashGuardAI\runs
+uuid: 94b804c63b10aedfd971bdbd9e48cd38672c426baa7f36e6d5e4e70916b9a40e
+sync: true
+api_key: ''
+clearml: true
+comet: true
+dvc: true
+hub: true
+mlflow: true
+neptune: true
+raytune: true
+tensorboard: true
+wandb: true

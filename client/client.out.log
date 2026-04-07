@@ -1,0 +1,43 @@
+
+> client@0.1.0 dev
+> next dev
+
+   ▲ Next.js 14.0.4
+   - Local:        http://localhost:3002
+   - Environments: .env.local
+
+ ✓ Ready in 2.3s
+ ✓ Compiled /middleware in 448ms (70 modules)
+cookie undefined
+ ○ Compiling / ...
+ ✓ Compiled / in 4.7s (745 modules)
+ ✓ Compiled in 517ms (344 modules)
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+ ○ Compiling /not-found ...
+ ✓ Compiled /not-found in 674ms (725 modules)
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+cookie undefined
+ ✓ Compiled /favicon.ico in 259ms (423 modules)
